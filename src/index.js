@@ -15,9 +15,7 @@ const isPlainObj = require('is-plain-obj')
  */
 const getFiles = function(pattern, cwd) {
 
-	return glob.sync(pattern, {
-		cwd: opts.cwd
-	})
+	return glob.sync(pattern, { cwd })
 
 }
 
@@ -82,19 +80,19 @@ module.exports = function(pattern, opts) {
 	}
 
 	opts = Object.assign({
-		cwd: process.cwd(),
-		dataPaths: (fileName) => {}
+		cwd       : process.cwd(),
+		dataPaths : () => {}
 	}, opts)
 
 	// Support relative and absolute paths
 	opts.cwd = path.resolve(process.cwd(), opts.cwd)
 
-	const filePaths = getFiles(pattern, cwd)
+	const filePaths = getFiles(pattern, opts.cwd)
 
 	return filePaths.map((filePath) => {
 
 		// Ensure that path is absolute
-		filePath = path.resolve(cwd, filePath)
+		filePath = path.resolve(opts.cwd, filePath)
 
 		return parseComponent(filePath, opts.cwd, opts.dataPaths)
 
