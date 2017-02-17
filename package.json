@@ -1,0 +1,42 @@
+{
+  "name": "component-lookup",
+  "version": "0.0.1",
+  "authors": [
+    "Tobias Reich <tobias@electerious.com>"
+  ],
+  "description": "Look for components and gather information about them",
+  "main": "src/index.js",
+  "keywords": [
+    "components",
+    "component",
+    "lookup",
+    "files",
+    "data",
+    "view",
+    "template"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/electerious/component-lookup",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electerious/component-lookup.git"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test": "istanbul cover _mocha"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.4",
+    "mocha": "^3.0.0"
+  },
+  "dependencies": {
+    "glob": "^7.1.1",
+    "is-plain-obj": "^1.1.0",
+    "locate-path": "^2.0.0"
+  }
+}
