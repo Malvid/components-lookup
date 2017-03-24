@@ -85,7 +85,7 @@ module.exports = function(pattern, opts) {
 	}, opts)
 
 	// Support relative and absolute paths
-	opts.cwd = path.resolve(process.cwd(), opts.cwd)
+	opts.cwd = path.resolve(opts.cwd)
 
 	const filePaths = getFiles(pattern, opts.cwd)
 
