@@ -1,5 +1,7 @@
 # component-lookup
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/electerious/component-lookup.svg)](https://greenkeeper.io/)
+
 [![Travis Build Status](https://travis-ci.org/electerious/component-lookup.svg?branch=master)](https://travis-ci.org/electerious/component-lookup) [![Coverage Status](https://coveralls.io/repos/github/electerious/component-lookup/badge.svg?branch=master)](https://coveralls.io/github/electerious/component-lookup?branch=master) [![Dependencies](https://david-dm.org/electerious/component-lookup.svg)](https://david-dm.org/electerious/component-lookup#info=dependencies)
 
 Look for components and gather information about them.
