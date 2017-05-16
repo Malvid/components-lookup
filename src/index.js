@@ -39,7 +39,7 @@ const parseComponent = function(filePath, cwd, dataPaths) {
 	const data = (() => {
 
 		// Look for the data in the same directory as filePath
-		const relativeDataPath = locatePath.sync(dataPaths(filePath), {
+		const relativeDataPath = locatePath.sync(dataPaths(id), {
 			cwd: fileDir
 		})
 
