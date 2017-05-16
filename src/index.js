@@ -22,14 +22,18 @@ const getFiles = function(pattern, cwd) {
 /**
  * Locate and load a file.
  * @public
+ * @param {String} filePath - Absolute path to component.
  * @param {Function} fn - Function that returns an array of paths to tell the potential location of a file.
  * @param {String} cwd - The directory in which to search.
  * @returns {String} file - Contents of a file.
  */
-const getFile = function(fn, cwd) {
+const getFile = function(filePath, fn, cwd) {
+
+	const fileName = path.parse(filePath).name
+	const fileExt  = path.parse(filePath).ext
 
 	// Get an array of paths to tell the location of potential files
-	const locations = fn(id)
+	const locations = fn(fileName, fileExt)
 
 	// Look for the data in the same directory as filePath
 	const relativePath = locatePath.sync(locations, { cwd })
@@ -62,7 +66,7 @@ const parseComponent = function(filePath, files, cwd) {
 
 	Object.keys(files).forEach((key) => {
 
-		data[key] = getFile(files[key], fileDir)
+		data[key] = getFile(filePath, files[key], fileDir)
 
 	})
 
