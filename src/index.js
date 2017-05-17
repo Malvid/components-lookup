@@ -69,7 +69,7 @@ const parseComponent = function(filePath, files, cwd) {
 	const name = path.parse(filePath).name
 
 	// Absolute preview URL
-	const url  = '/' + rename(path.relative(cwd, filePath), '.html')
+	const url = '/' + rename(path.relative(cwd, filePath), '.html')
 
 	const data = {}
 
