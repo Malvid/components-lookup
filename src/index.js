@@ -2,8 +2,10 @@
 
 const path       = require('path')
 const fs         = require('fs')
+const crypto     = require('crypto')
 const glob       = require('glob')
 const locatePath = require('locate-path')
+const rename     = require('rename-extension')
 const isPlainObj = require('is-plain-obj')
 
 /**
@@ -60,8 +62,15 @@ const parseComponent = function(filePath, files, cwd) {
 
 	const fileDir = path.dirname(filePath)
 
-	const id   = path.parse(filePath).name
-	const src  = path.relative(cwd, filePath)
+	// Use the absolute filePath to generate a unique id
+	const id = crypto.createHash('sha1').update(filePath).digest('hex')
+
+	// Filename without extension
+	const name = path.parse(filePath).name
+
+	// Absolute preview URL
+	const url  = '/' + rename(path.relative(cwd, filePath), '.html')
+
 	const data = {}
 
 	Object.keys(files).forEach((key) => {
@@ -72,7 +81,9 @@ const parseComponent = function(filePath, files, cwd) {
 
 	return {
 		id,
-		src,
+		name,
+		src: filePath,
+		url,
 		data
 	}
 
