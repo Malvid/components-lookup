@@ -15,18 +15,23 @@ npm install component-lookup
 ```js
 const componentLookup = require('component-lookup')
 
-componentLookup('*/[^_]*.njk')
-componentLookup('*/[^_]*.njk', { cwd: __dirname })
-componentLookup('*/[^_]*.njk', { dataPaths: (fileName) => [ `${ fileName }.data.js` ] })
+const resolvers = {
+	view: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ],
+	data: (fileName, fileExt) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ],
+	notes: (fileName, fileExt) => [ `${ fileName }.md` ]
+}
+
+componentLookup('**/*.njk', resolvers)
+componentLookup('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: __dirname })
 ```
 
 ## Parameters
 
 - `pattern` `{String}` - Files to look for using a glob pattern.
+- `resolvers` `{Object}` - Functions that return an array of paths to tell the potential location of files.
 - `opts` `{?Object}` - Options.
 	- `cwd` `{?String}` - Directory in which to look for components. Defaults to `process.cwd()`.
-	- `dataPaths` `{?Function}` - Function that returns an array of paths to tell `component-lookup` the location of potential data files.
 
 ## Returns
 
-- `{Object}` - Components and their information.
+- `{Array}` - Components and their information.
