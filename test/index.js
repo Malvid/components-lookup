@@ -13,7 +13,7 @@ describe('index()', function() {
 
 	it('should throw an error when called without files', function() {
 
-		assert.throws(() => index(''), `'files' must be an object`)
+		assert.throws(() => index(''), `'resolvers' must be an object`)
 
 	})
 

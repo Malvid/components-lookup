@@ -25,22 +25,22 @@ const getFiles = function(pattern, cwd) {
  * Locate and load a file.
  * @public
  * @param {String} filePath - Absolute path to component.
- * @param {Function} fn - Function that returns an array of paths to tell the potential location of a file.
+ * @param {Function} resolver - Function that returns an array of paths to tell the potential location of a file.
  * @param {String} cwd - The directory in which to search.
  * @returns {String} file - Contents of a file.
  */
-const getFile = function(filePath, fn, cwd) {
+const getFile = function(filePath, resolver, cwd) {
 
 	const fileName = path.parse(filePath).name
 	const fileExt  = path.parse(filePath).ext
 
 	// Get an array of paths to tell the location of potential files
-	const locations = fn(fileName, fileExt)
+	const locations = resolver(fileName, fileExt)
 
 	// Look for the data in the same directory as filePath
 	const relativePath = locatePath.sync(locations, { cwd })
 
-	// Only continue when with files
+	// Only continue with files
 	if (relativePath==null) return
 
 	// Path to data must be absolute to read it
@@ -54,11 +54,11 @@ const getFile = function(filePath, fn, cwd) {
  * Gather information about a component.
  * @public
  * @param {String} filePath - Absolute path to component.
- * @param {Object} files - Functions that return an array of paths to tell the potential location of files.
+ * @param {Object} resolvers - Functions that return an array of paths to tell the potential location of files.
  * @param {String} cwd
  * @returns {Object} component - Information of a component.
  */
-const parseComponent = function(filePath, files, cwd) {
+const parseComponent = function(filePath, resolvers, cwd) {
 
 	const fileDir = path.dirname(filePath)
 
@@ -71,13 +71,13 @@ const parseComponent = function(filePath, files, cwd) {
 	// Absolute preview URL
 	const url = '/' + rename(path.relative(cwd, filePath), '.html')
 
-	const data = {}
+	// Load files of component
+	const data = Object.keys(resolvers).reduce((acc, key) => {
 
-	Object.keys(files).forEach((key) => {
+		acc[key] = getFile(filePath, resolvers[key], fileDir)
+		return acc
 
-		data[key] = getFile(filePath, files[key], fileDir)
-
-	})
+	}, {})
 
 	return {
 		id,
@@ -93,18 +93,18 @@ const parseComponent = function(filePath, files, cwd) {
  * Look for components and gather information about them.
  * @public
  * @param {String} pattern - Files to look for using a glob pattern.
- * @param {Object} files - Functions that return an array of paths to tell the potential location of files.
+ * @param {Object} resolvers - Functions that return an array of paths to tell the potential location of files.
  * @param {?Object} opts - Options.
  * @returns {Array} components - Components and their information.
  */
-module.exports = function(pattern, files, opts) {
+module.exports = function(pattern, resolvers, opts) {
 
 	if (typeof pattern!=='string') {
 		throw new Error(`'pattern' must be a string`)
 	}
 
-	if (isPlainObj(files)===false) {
-		throw new Error(`'files' must be an object`)
+	if (isPlainObj(resolvers)===false) {
+		throw new Error(`'resolvers' must be an object`)
 	}
 
 	if (isPlainObj(opts)===false && opts!=null) {
@@ -126,7 +126,7 @@ module.exports = function(pattern, files, opts) {
 		// Ensure that path is absolute
 		filePath = path.resolve(opts.cwd, filePath)
 
-		return parseComponent(filePath, files, opts.cwd)
+		return parseComponent(filePath, resolvers, opts.cwd)
 
 	})
 
