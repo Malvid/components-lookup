@@ -1,6 +1,6 @@
 {
-  "name": "component-lookup",
-  "version": "0.0.6",
+  "name": "components-lookup",
+  "version": "1.0.0",
   "authors": [
     "Tobias Reich <tobias@electerious.com>"
   ],
@@ -16,10 +16,10 @@
     "template"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/electerious/component-lookup",
+  "homepage": "https://github.com/comwrap/components-lookup",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electerious/component-lookup.git"
+    "url": "https://github.com/comwrap/components-lookup.git"
   },
   "files": [
     "src"

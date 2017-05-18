@@ -1,19 +1,19 @@
-# component-lookup
+# components-lookup
 
-[![Travis Build Status](https://travis-ci.org/electerious/component-lookup.svg?branch=master)](https://travis-ci.org/electerious/component-lookup) [![Coverage Status](https://coveralls.io/repos/github/electerious/component-lookup/badge.svg?branch=master)](https://coveralls.io/github/electerious/component-lookup?branch=master) [![Dependencies](https://david-dm.org/electerious/component-lookup.svg)](https://david-dm.org/electerious/component-lookup#info=dependencies)
+[![Travis Build Status](https://travis-ci.org/electerious/components-lookup.svg?branch=master)](https://travis-ci.org/electerious/components-lookup) [![Coverage Status](https://coveralls.io/repos/github/electerious/components-lookup/badge.svg?branch=master)](https://coveralls.io/github/electerious/components-lookup?branch=master) [![Dependencies](https://david-dm.org/electerious/components-lookup.svg)](https://david-dm.org/electerious/components-lookup#info=dependencies)
 
 Look for components and gather information about them.
 
 ## Install
 
 ```
-npm install component-lookup
+npm install components-lookup
 ```
 
 ## Usage
 
 ```js
-const componentLookup = require('component-lookup')
+const componentsLookup = require('components-lookup')
 
 const resolvers = {
 	view: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ],
@@ -21,8 +21,8 @@ const resolvers = {
 	notes: (fileName, fileExt) => [ `${ fileName }.md` ]
 }
 
-componentLookup('**/*.njk', resolvers)
-componentLookup('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: __dirname })
+componentsLookup('**/*.njk', resolvers)
+componentsLookup('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: __dirname })
 ```
 
 ## Parameters
