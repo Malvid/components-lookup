@@ -27,12 +27,12 @@ const getFiles = function(pattern, cwd) {
  * @param {String} filePath - Absolute path to component.
  * @param {Function} resolver - Function that returns an array of paths to tell the potential location of a file.
  * @param {String} cwd - The directory in which to search.
- * @returns {String} file - Contents of a file.
+ * @returns {?String} file - Contents of a file.
  */
 const getFile = function(filePath, resolver, cwd) {
 
 	// No content when there's no resolver
-	if (resolver==null) return
+	if (resolver==null) return null
 
 	const fileName = path.parse(filePath).name
 	const fileExt  = path.parse(filePath).ext
@@ -44,7 +44,7 @@ const getFile = function(filePath, resolver, cwd) {
 	const relativePath = locatePath.sync(locations, { cwd })
 
 	// Only continue with files
-	if (relativePath==null) return
+	if (relativePath==null) return null
 
 	// Path to data must be absolute to read it
 	const absolutePath = path.resolve(cwd, relativePath)
