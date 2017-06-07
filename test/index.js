@@ -61,7 +61,8 @@ describe('index()', function() {
 		const resolvers = {
 			view: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ],
 			data: (fileName, fileExt) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ],
-			notes: (fileName, fileExt) => [ `${ fileName }.md` ]
+			notes: (fileName, fileExt) => [ `${ fileName }.md` ],
+			output: null
 		}
 
 		return fsify(structure).then((structure) => {
@@ -77,6 +78,7 @@ describe('index()', function() {
 			assert.equal(structure[0].contents[0].contents, components[0].data.view)
 			assert.equal(structure[0].contents[1].contents, components[0].data.data)
 			assert.equal(null, components[0].data.notes)
+			assert.equal(null, components[0].data.output)
 
 		})
 

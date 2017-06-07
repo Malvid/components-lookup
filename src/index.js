@@ -31,6 +31,9 @@ const getFiles = function(pattern, cwd) {
  */
 const getFile = function(filePath, resolver, cwd) {
 
+	// No content when there's no resolver
+	if (resolver==null) return
+
 	const fileName = path.parse(filePath).name
 	const fileExt  = path.parse(filePath).ext
 
