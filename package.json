@@ -29,15 +29,15 @@
     "test": "istanbul cover _mocha"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "coveralls": "^2.11.9",
-    "fsify": "^2.0.1",
-    "istanbul": "^0.4.4",
-    "mocha": "^3.0.0",
+    "chai": "^4.0.2",
+    "coveralls": "^2.13.1",
+    "fsify": "^2.0.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
     "uuid": "^3.0.1"
   },
   "dependencies": {
-    "glob": "^7.1.1",
+    "glob": "^7.1.2",
     "is-plain-obj": "^1.1.0",
     "locate-path": "^2.0.0",
     "rename-extension": "^2.0.0"
