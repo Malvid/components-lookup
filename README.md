@@ -16,6 +16,7 @@ npm install components-lookup
 
 ```
 .
+├── index.config.json
 ├── index.data.json
 └── index.njk
 ```
@@ -25,11 +26,25 @@ npm install components-lookup
 ```js
 const componentsLookup = require('components-lookup')
 
-const resolvers = {
-	view: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ],
-	data: (fileName, fileExt) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ],
-	notes: (fileName, fileExt) => [ `${ fileName }.md` ]
-}
+const resolvers = [
+	{
+		id: 'view',
+		resolve: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ]
+	},
+	{
+		id: 'data',
+		resolve: (fileName, fileExt) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ]
+	},
+	{
+		id: 'notes',
+		resolve: (fileName, fileExt) => [ `${ fileName }.md` ]
+	},
+	{
+		id: 'config',
+		parse: (contents) => JSON.parse(contents),
+		resolve: (fileName, fileExt) => [ `${ fileName }.config.json` ]
+	}
+]
 
 componentsLookup('**/*.njk', resolvers)
 ```
@@ -47,7 +62,8 @@ componentsLookup('**/*.njk', resolvers)
 		data: [
 			{ index: 0, id: 'view', data: 'Hello World!' },
 			{ index: 1, id: 'data', data: '{}' },
-			{ index: 2, id: 'notes', data: null }
+			{ index: 2, id: 'notes', data: null },
+			{ index: 3, id: 'config', data: {} }
 		]
 	}
 ]
@@ -56,7 +72,7 @@ componentsLookup('**/*.njk', resolvers)
 ## Parameters
 
 - `pattern` `{String}` - Files to look for using a glob pattern.
-- `resolvers` `{Object}` - Functions that return an array of paths to tell the potential location of files.
+- `resolvers` `{Array}` - Array of objects with functions that return an array of paths to tell the potential location of files.
 - `opts` `{?Object}` - Options.
 	- `cwd` `{?String}` - Directory in which to look for components. Defaults to `process.cwd()`.
 
