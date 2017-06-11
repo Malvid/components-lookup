@@ -83,10 +83,9 @@ const parseComponent = function(filePath, index, resolvers, cwd) {
 	// Absolute preview URL
 	const url = '/' + rename(filePath, '.html')
 
-	// Load files of component
-	const data = resolvers.map((resolver, index) => ({
+	// Reuse data from resolver and add additional information
+	const data = resolvers.map((resolver, index) => Object.assign(resolver, {
 		index,
-		id: resolver.id,
 		data: getFile(filePath, resolver.resolve, resolver.parse, fileCwd)
 	}))
 

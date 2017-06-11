@@ -49,7 +49,7 @@ describe('index()', function() {
 					{
 						type: fsify.FILE,
 						name: `${ componentName }.njk`,
-						contents: 'Hello World!'
+						contents: uuid()
 					},
 					{
 						type: fsify.FILE,
@@ -110,8 +110,7 @@ describe('index()', function() {
 				contents: [
 					{
 						type: fsify.FILE,
-						name: `${ componentName }.njk`,
-						contents: 'Hello World!'
+						name: `${ componentName }.njk`
 					},
 					{
 						type: fsify.FILE,
@@ -155,8 +154,7 @@ describe('index()', function() {
 				contents: [
 					{
 						type: fsify.FILE,
-						name: `${ componentName }.njk`,
-						contents: 'Hello World!'
+						name: `${ componentName }.njk`
 					},
 					{
 						type: fsify.FILE,
@@ -188,6 +186,45 @@ describe('index()', function() {
 		}, (err) => {
 
 			assert.include(err.message, 'Failed to parse')
+
+		})
+
+	})
+
+	it('should return an array with a component that includes custom data from the resolver', function() {
+
+		const customData = uuid()
+
+		const structure = [
+			{
+				type: fsify.DIRECTORY,
+				name: uuid(),
+				contents: [
+					{
+						type: fsify.FILE,
+						name: `${ uuid() }.njk`
+					}
+				]
+			}
+		]
+
+		const resolvers = [
+			{
+				id: 'view',
+				customData,
+				resolve: (fileName, fileExt) => [ `${ fileName }${ fileExt }` ]
+			}
+		]
+
+		return fsify(structure).then((structure) => {
+
+			return index('**/[^_]*.{ejs,njk,html}', resolvers, {
+				cwd: structure[0].name
+			})
+
+		}).then((components) => {
+
+			assert.equal(customData, getData(components[0], 'view').customData)
 
 		})
 
