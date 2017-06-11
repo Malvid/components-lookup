@@ -72,14 +72,20 @@ describe('index()', function() {
 
 		}).then((components) => {
 
-			const getData = (component, id) => component.data.filter((data) => data.id===id)[0].data
+			const getData = (component, id) => component.data.filter((data) => data.id===id)[0]
 
 			assert.isArray(components)
+
+			assert.equal(0, components[0].index)
+			assert.equal(0, getData(components[0], 'view').index)
+
 			assert.equal(componentName, components[0].name)
+
 			assert.equal(Object.keys(resolvers).length, components[0].data.length)
-			assert.equal(structure[0].contents[0].contents, getData(components[0], 'view'))
-			assert.equal(structure[0].contents[1].contents, getData(components[0], 'data'))
-			assert.equal(null, getData(components[0], 'notes'))
+
+			assert.equal(structure[0].contents[0].contents, getData(components[0], 'view').data)
+			assert.equal(structure[0].contents[1].contents, getData(components[0], 'data').data)
+			assert.equal(null, getData(components[0], 'notes').data)
 
 		})
 

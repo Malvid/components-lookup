@@ -54,11 +54,12 @@ const getFile = function(filePath, resolver, cwd) {
  * Gather information about a component.
  * @public
  * @param {String} filePath - Relative path to component.
+ * @param {Integer} index - Index of the current element being processed.
  * @param {Object} resolvers - Functions that return an array of paths to tell the potential location of files.
  * @param {String} cwd
  * @returns {Object} component - Information of a component.
  */
-const parseComponent = function(filePath, resolvers, cwd) {
+const parseComponent = function(filePath, index, resolvers, cwd) {
 
 	// Use the filePath to generate a unique id
 	const id = crypto.createHash('sha1').update(filePath).digest('hex')
@@ -73,12 +74,14 @@ const parseComponent = function(filePath, resolvers, cwd) {
 	const url = '/' + rename(filePath, '.html')
 
 	// Load files of component
-	const data = Object.keys(resolvers).map((key) => ({
+	const data = Object.keys(resolvers).map((key, index) => ({
+		index,
 		id: key,
 		data: getFile(filePath, resolvers[key], fileCwd)
 	}))
 
 	return {
+		index,
 		id,
 		name,
 		src: filePath,
@@ -121,6 +124,6 @@ module.exports = function(pattern, resolvers, opts) {
 	const filePaths = getFiles(pattern, opts.cwd)
 
 	// Parse all matching components
-	return filePaths.map((filePath) => parseComponent(filePath, resolvers, opts.cwd))
+	return filePaths.map((filePath, index) => parseComponent(filePath, index, resolvers, opts.cwd))
 
 }

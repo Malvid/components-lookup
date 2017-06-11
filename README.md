@@ -39,14 +39,15 @@ componentsLookup('**/*.njk', resolvers)
 ```js
 [
 	{
+		index: 0,
 		id: '8bf47e30644eb32653aa6284ebe2fb9c17e3587d',
 		name: 'index',
 		src: 'index.njk',
 		url: '/index.html',
 		data: [
-			{ id: 'view', data: 'Hello World!' },
-			{ id: 'data', data: '{}' },
-			{ id: 'notes', data: null }
+			{ index: 0, id: 'view', data: 'Hello World!' },
+			{ index: 1, id: 'data', data: '{}' },
+			{ index: 2, id: 'notes', data: null }
 		]
 	}
 ]
