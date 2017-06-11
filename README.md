@@ -12,6 +12,16 @@ npm install components-lookup
 
 ## Usage
 
+### Structure
+
+```
+.
+├── index.data.json
+└── index.njk
+```
+
+### Code
+
 ```js
 const componentsLookup = require('components-lookup')
 
@@ -22,7 +32,24 @@ const resolvers = {
 }
 
 componentsLookup('**/*.njk', resolvers)
-componentsLookup('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: __dirname })
+```
+
+### Output
+
+```js
+[
+	{
+		id: '8bf47e30644eb32653aa6284ebe2fb9c17e3587d',
+		name: 'index',
+		src: 'index.njk',
+		url: '/index.html',
+		data: [
+			{ id: 'view', data: 'Hello World!' },
+			{ id: 'data', data: '{}' },
+			{ id: 'notes', data: null }
+		]
+	}
+]
 ```
 
 ## Parameters
