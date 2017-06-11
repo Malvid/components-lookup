@@ -24,15 +24,12 @@ const getFiles = function(pattern, cwd) {
 /**
  * Locate and load a file.
  * @public
- * @param {String} filePath - Absolute path to component.
+ * @param {String} filePath - Absolute or relative path to component.
  * @param {Function} resolver - Function that returns an array of paths to tell the potential location of a file.
- * @param {String} cwd - The directory in which to search.
+ * @param {String} cwd - The directory in which to search. Must be absolute.
  * @returns {?String} file - Contents of a file.
  */
 const getFile = function(filePath, resolver, cwd) {
-
-	// No content when there's no resolver
-	if (resolver==null) return null
 
 	const fileName = path.parse(filePath).name
 	const fileExt  = path.parse(filePath).ext
@@ -56,31 +53,30 @@ const getFile = function(filePath, resolver, cwd) {
 /**
  * Gather information about a component.
  * @public
- * @param {String} filePath - Absolute path to component.
+ * @param {String} filePath - Relative path to component.
  * @param {Object} resolvers - Functions that return an array of paths to tell the potential location of files.
  * @param {String} cwd
  * @returns {Object} component - Information of a component.
  */
 const parseComponent = function(filePath, resolvers, cwd) {
 
-	const fileDir = path.dirname(filePath)
-
-	// Use the absolute filePath to generate a unique id
+	// Use the filePath to generate a unique id
 	const id = crypto.createHash('sha1').update(filePath).digest('hex')
 
 	// Filename without extension
 	const name = path.parse(filePath).name
 
+	// Absolute directory path to the component
+	const fileCwd = path.resolve(cwd, path.dirname(filePath))
+
 	// Absolute preview URL
-	const url = '/' + rename(path.relative(cwd, filePath), '.html')
+	const url = '/' + rename(filePath, '.html')
 
 	// Load files of component
-	const data = Object.keys(resolvers).reduce((acc, key) => {
-
-		acc[key] = getFile(filePath, resolvers[key], fileDir)
-		return acc
-
-	}, {})
+	const data = Object.keys(resolvers).map((key) => ({
+		id: key,
+		data: getFile(filePath, resolvers[key], fileCwd)
+	}))
 
 	return {
 		id,
@@ -124,13 +120,7 @@ module.exports = function(pattern, resolvers, opts) {
 	// Get all files matching the pattern
 	const filePaths = getFiles(pattern, opts.cwd)
 
-	return filePaths.map((filePath) => {
-
-		// Ensure that path is absolute
-		filePath = path.resolve(opts.cwd, filePath)
-
-		return parseComponent(filePath, resolvers, opts.cwd)
-
-	})
+	// Parse all matching components
+	return filePaths.map((filePath) => parseComponent(filePath, resolvers, opts.cwd))
 
 }
