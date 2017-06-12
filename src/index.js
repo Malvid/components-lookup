@@ -84,7 +84,7 @@ const parseComponent = function(filePath, index, resolvers, cwd) {
 	const url = '/' + rename(filePath, '.html')
 
 	// Reuse data from resolver and add additional information
-	const data = resolvers.map((resolver, index) => Object.assign(resolver, {
+	const data = resolvers.map((resolver, index) => Object.assign({}, resolver, {
 		index,
 		data: getFile(filePath, resolver.resolve, resolver.parse, fileCwd)
 	}))
