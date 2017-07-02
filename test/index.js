@@ -1,9 +1,9 @@
 'use strict'
 
-const os     = require('os')
+const os = require('os')
 const assert = require('chai').assert
-const uuid   = require('uuid/v4')
-const index  = require('./../src/index')
+const uuid = require('uuid/v4')
+const index = require('./../src/index')
 
 const fsify = require('fsify')({
 	cwd: os.tmpdir()

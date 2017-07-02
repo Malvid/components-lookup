@@ -1,11 +1,11 @@
 'use strict'
 
-const path       = require('path')
-const fs         = require('fs')
-const crypto     = require('crypto')
-const glob       = require('glob')
+const path = require('path')
+const fs = require('fs')
+const crypto = require('crypto')
+const glob = require('glob')
 const locatePath = require('locate-path')
-const rename     = require('rename-extension')
+const rename = require('rename-extension')
 const isPlainObj = require('is-plain-obj')
 
 /**
@@ -33,7 +33,7 @@ const getFiles = function(pattern, cwd) {
 const getFile = function(filePath, resolve, parse, cwd) {
 
 	const fileName = path.parse(filePath).name
-	const fileExt  = path.parse(filePath).ext
+	const fileExt = path.parse(filePath).ext
 
 	// Get an array of paths to tell the location of potential files
 	const locations = resolve(fileName, fileExt)
