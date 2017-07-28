@@ -13,35 +13,61 @@ const getData = (component, id) => component.data.filter((data) => data.id===id)
 
 describe('index()', function() {
 
-	it('should throw an error when called without pattern', function() {
+	it('should throw an error when called without pattern', async function() {
 
-		assert.throws(() => index(), `'pattern' must be a string`)
+		return index().then((result) => {
 
-	})
+			throw new Error('Returned without error')
 
-	it('should throw an error when called without files', function() {
+		}, (err) => {
 
-		assert.throws(() => index(''), `'resolvers' must be an array`)
+			assert.strictEqual(`'pattern' must be a string`, err.message)
 
-	})
-
-	it('should throw an error when called with invalid options', function() {
-
-		assert.throws(() => index('', [], ''), `'opts' must be an object, null or undefined`)
+		})
 
 	})
 
-	it('should return an array', function() {
+	it('should throw an error when called without files', async function() {
 
-		assert.isArray(index('*', []))
+		return index('').then((result) => {
+
+			throw new Error('Returned without error')
+
+		}, (err) => {
+
+			assert.strictEqual(`'resolvers' must be an array`, err.message)
+
+		})
 
 	})
 
-	it('should return an array with a component that has view and data, but no notes', function() {
+	it('should throw an error when called with invalid options', async function() {
+
+		return index('', [], '').then((result) => {
+
+			throw new Error('Returned without error')
+
+		}, (err) => {
+
+			assert.strictEqual(`'opts' must be an object, null or undefined`, err.message)
+
+		})
+
+	})
+
+	it('should return an array', async function() {
+
+		const result = await index('*', [])
+
+		assert.isArray(result)
+
+	})
+
+	it('should return an array with a component that has view and data, but no notes', async function() {
 
 		const componentName = uuid()
 
-		const structure = [
+		const structure = await fsify([
 			{
 				type: fsify.DIRECTORY,
 				name: uuid(),
@@ -58,7 +84,7 @@ describe('index()', function() {
 					}
 				]
 			}
-		]
+		])
 
 		const resolvers = [
 			{
@@ -75,35 +101,29 @@ describe('index()', function() {
 			}
 		]
 
-		return fsify(structure).then((structure) => {
-
-			return index('**/[^_]*.{ejs,njk,html}', resolvers, {
-				cwd: structure[0].name
-			})
-
-		}).then((components) => {
-
-			assert.equal(0, components[0].index)
-			assert.equal(0, getData(components[0], 'view').index)
-
-			assert.equal(componentName, components[0].name)
-
-			assert.equal(Object.keys(resolvers).length, components[0].data.length)
-
-			assert.equal(structure[0].contents[0].contents, getData(components[0], 'view').data)
-			assert.equal(structure[0].contents[1].contents, getData(components[0], 'data').data)
-			assert.equal(null, getData(components[0], 'notes').data)
-
+		const result = await index('**/[^_]*.{ejs,njk,html}', resolvers, {
+			cwd: structure[0].name
 		})
+
+		assert.equal(0, result[0].index)
+		assert.equal(0, getData(result[0], 'view').index)
+
+		assert.equal(componentName, result[0].name)
+
+		assert.equal(Object.keys(resolvers).length, result[0].data.length)
+
+		assert.equal(structure[0].contents[0].contents, getData(result[0], 'view').data)
+		assert.equal(structure[0].contents[1].contents, getData(result[0], 'data').data)
+		assert.equal(null, getData(result[0], 'notes').data)
 
 	})
 
-	it('should return an array with a component that has a parsed config', function() {
+	it('should return an array with a component that has a parsed config', async function() {
 
 		const componentName = uuid()
 		const componentConfig = { data: uuid() }
 
-		const structure = [
+		const structure = await fsify([
 			{
 				type: fsify.DIRECTORY,
 				name: uuid(),
@@ -119,7 +139,7 @@ describe('index()', function() {
 					}
 				]
 			}
-		]
+		])
 
 		const resolvers = [
 			{
@@ -129,25 +149,19 @@ describe('index()', function() {
 			}
 		]
 
-		return fsify(structure).then((structure) => {
-
-			return index('**/[^_]*.{ejs,njk,html}', resolvers, {
-				cwd: structure[0].name
-			})
-
-		}).then((components) => {
-
-			assert.deepEqual(componentConfig, getData(components[0], 'config').data)
-
+		const result = await index('**/[^_]*.{ejs,njk,html}', resolvers, {
+			cwd: structure[0].name
 		})
+
+		assert.deepEqual(componentConfig, getData(result[0], 'config').data)
 
 	})
 
-	it('should throw an error when a resolved file failed to parse', function() {
+	it('should throw an error when a resolved file failed to parse', async function() {
 
 		const componentName = uuid()
 
-		const structure = [
+		const structure = await fsify([
 			{
 				type: fsify.DIRECTORY,
 				name: uuid(),
@@ -163,7 +177,7 @@ describe('index()', function() {
 					}
 				]
 			}
-		]
+		])
 
 		const resolvers = [
 			{
@@ -173,13 +187,7 @@ describe('index()', function() {
 			}
 		]
 
-		return fsify(structure).then((structure) => {
-
-			return index('**/[^_]*.{ejs,njk,html}', resolvers, {
-				cwd: structure[0].name
-			})
-
-		}).then((components) => {
+		return index('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: structure[0].name }).then((result) => {
 
 			throw new Error('Returned without error')
 
@@ -191,11 +199,11 @@ describe('index()', function() {
 
 	})
 
-	it('should return an array with a component that includes custom data from the resolver', function() {
+	it('should return an array with a component that includes custom data from the resolver', async function() {
 
 		const customData = uuid()
 
-		const structure = [
+		const structure = await fsify([
 			{
 				type: fsify.DIRECTORY,
 				name: uuid(),
@@ -206,7 +214,7 @@ describe('index()', function() {
 					}
 				]
 			}
-		]
+		])
 
 		const resolvers = [
 			{
@@ -216,17 +224,11 @@ describe('index()', function() {
 			}
 		]
 
-		return fsify(structure).then((structure) => {
-
-			return index('**/[^_]*.{ejs,njk,html}', resolvers, {
-				cwd: structure[0].name
-			})
-
-		}).then((components) => {
-
-			assert.equal(customData, getData(components[0], 'view').customData)
-
+		const result = await index('**/[^_]*.{ejs,njk,html}', resolvers, {
+			cwd: structure[0].name
 		})
+
+		assert.equal(customData, getData(result[0], 'view').customData)
 
 	})
 

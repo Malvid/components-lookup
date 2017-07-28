@@ -46,7 +46,7 @@ const resolvers = [
 	}
 ]
 
-componentsLookup('**/*.njk', resolvers)
+componentsLookup('**/*.njk', resolvers).then(console.log)
 ```
 
 ### Output
@@ -78,4 +78,4 @@ componentsLookup('**/*.njk', resolvers)
 
 ## Returns
 
-- `{Array}` - Components and their information.
+- `{Promise<Array>}` - Components and their information.

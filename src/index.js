@@ -7,19 +7,8 @@ const glob = require('glob')
 const locatePath = require('locate-path')
 const rename = require('rename-extension')
 const isPlainObj = require('is-plain-obj')
-
-/**
- * Find files by a glob pattern.
- * @public
- * @param {String} pattern - Files to look for using a glob pattern.
- * @param {String} cwd - The directory in which to search.
- * @returns {Array} filePaths - List of matching files.
- */
-const getFiles = function(pattern, cwd) {
-
-	return glob.sync(pattern, { cwd })
-
-}
+const pify = require('pify')
+const pMap = require('p-map')
 
 /**
  * Locate and load a file.
@@ -28,9 +17,9 @@ const getFiles = function(pattern, cwd) {
  * @param {Function} resolve - Function that returns an array of paths to tell the potential location of a file.
  * @param {?Function} parse - Function that parses the contents of the file resolved by the resolve function.
  * @param {String} cwd - The directory in which to search. Must be absolute.
- * @returns {?String} file - Contents of a file.
+ * @returns {Promise<?String>} Contents of a file.
  */
-const getFile = function(filePath, resolve, parse, cwd) {
+const getFile = async function(filePath, resolve, parse, cwd) {
 
 	const fileName = path.parse(filePath).name
 	const fileExt = path.parse(filePath).ext
@@ -39,7 +28,7 @@ const getFile = function(filePath, resolve, parse, cwd) {
 	const locations = resolve(fileName, fileExt)
 
 	// Look for the data in the same directory as filePath
-	const relativePath = locatePath.sync(locations, { cwd })
+	const relativePath = await locatePath(locations, { cwd })
 
 	// Only continue with files
 	if (relativePath==null) return null
@@ -48,7 +37,7 @@ const getFile = function(filePath, resolve, parse, cwd) {
 	const absolutePath = path.resolve(cwd, relativePath)
 
 	// Load the file
-	const contents = fs.readFileSync(absolutePath, 'utf8')
+	const contents = await pify(fs.readFile)(absolutePath, 'utf8')
 
 	// Parse file contents with the given parser
 	if (parse!=null) {
@@ -67,9 +56,9 @@ const getFile = function(filePath, resolve, parse, cwd) {
  * @param {Integer} index - Index of the current element being processed.
  * @param {Array} resolvers - Array of objects with functions that return an array of paths to tell the potential location of files.
  * @param {String} cwd
- * @returns {Object} component - Information of a component.
+ * @returns {Promise<Object>} Information of a component.
  */
-const parseComponent = function(filePath, index, resolvers, cwd) {
+const parseComponent = async function(filePath, index, resolvers, cwd) {
 
 	// Use the filePath to generate a unique id
 	const id = crypto.createHash('sha1').update(filePath).digest('hex')
@@ -84,10 +73,14 @@ const parseComponent = function(filePath, index, resolvers, cwd) {
 	const url = '/' + rename(filePath, '.html')
 
 	// Reuse data from resolver and add additional information
-	const data = resolvers.map((resolver, index) => Object.assign({}, resolver, {
-		index,
-		data: getFile(filePath, resolver.resolve, resolver.parse, fileCwd)
-	}))
+	const data = await pMap(resolvers, async (resolver, index) => {
+
+		return Object.assign({}, resolver, {
+			index,
+			data: await getFile(filePath, resolver.resolve, resolver.parse, fileCwd)
+		})
+
+	})
 
 	return {
 		index,
@@ -106,21 +99,13 @@ const parseComponent = function(filePath, index, resolvers, cwd) {
  * @param {String} pattern - Files to look for using a glob pattern.
  * @param {Array} resolvers - Array of objects with functions that return an array of paths to tell the potential location of files.
  * @param {?Object} opts - Options.
- * @returns {Array} components - Components and their information.
+ * @returns {Promise<Array>} Components and their information.
  */
-module.exports = function(pattern, resolvers, opts) {
+module.exports = async function(pattern, resolvers, opts) {
 
-	if (typeof pattern!=='string') {
-		throw new Error(`'pattern' must be a string`)
-	}
-
-	if (Array.isArray(resolvers)===false) {
-		throw new Error(`'resolvers' must be an array`)
-	}
-
-	if (isPlainObj(opts)===false && opts!=null) {
-		throw new Error(`'opts' must be an object, null or undefined`)
-	}
+	if (typeof pattern!=='string') throw new Error(`'pattern' must be a string`)
+	if (Array.isArray(resolvers)===false) throw new Error(`'resolvers' must be an array`)
+	if (isPlainObj(opts)===false && opts!=null) throw new Error(`'opts' must be an object, null or undefined`)
 
 	opts = Object.assign({
 		cwd: process.cwd()
@@ -130,9 +115,9 @@ module.exports = function(pattern, resolvers, opts) {
 	opts.cwd = path.resolve(opts.cwd)
 
 	// Get all files matching the pattern
-	const filePaths = getFiles(pattern, opts.cwd)
+	const filePaths = await pify(glob)(pattern, { cwd: opts.cwd })
 
 	// Parse all matching components
-	return filePaths.map((filePath, index) => parseComponent(filePath, index, resolvers, opts.cwd))
+	return pMap(filePaths, (filePath, index) => parseComponent(filePath, index, resolvers, opts.cwd))
 
 }
