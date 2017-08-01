@@ -13,16 +13,14 @@ const pMap = require('p-map')
 /**
  * Locate and load a file.
  * @public
- * @param {String} filePath - Absolute or relative path to component.
+ * @param {String} fileName - File name of the component.
+ * @param {String} fileExt - File extension of the component.
  * @param {Function} resolve - Function that returns an array of paths to tell the potential location of a file.
  * @param {?Function} parse - Function that parses the contents of the file resolved by the resolve function.
  * @param {String} cwd - The directory in which to search. Must be absolute.
  * @returns {Promise<?String>} Contents of a file.
  */
-const getFile = async function(filePath, resolve, parse, cwd) {
-
-	const fileName = path.parse(filePath).name
-	const fileExt = path.parse(filePath).ext
+const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 
 	// Get an array of paths to tell the location of potential files
 	const locations = resolve(fileName, fileExt)
@@ -63,8 +61,8 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
 	// Use the filePath to generate a unique id
 	const id = crypto.createHash('sha1').update(filePath).digest('hex')
 
-	// Filename without extension
-	const name = path.parse(filePath).name
+	// File name and extension
+	const { name: fileName, ext: fileExt } = path.parse(filePath)
 
 	// Absolute directory path to the component
 	const fileCwd = path.resolve(cwd, path.dirname(filePath))
@@ -77,7 +75,7 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
 
 		return Object.assign({}, resolver, {
 			index,
-			data: await getFile(filePath, resolver.resolve, resolver.parse, fileCwd)
+			data: await getFile(fileName, fileExt, resolver.resolve, resolver.parse, fileCwd)
 		})
 
 	})
@@ -85,7 +83,7 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
 	return {
 		index,
 		id,
-		name,
+		name: fileName,
 		src: filePath,
 		url,
 		data
