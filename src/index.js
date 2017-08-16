@@ -59,7 +59,7 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 const parseComponent = async function(filePath, index, resolvers, cwd) {
 
 	// Use the filePath to generate a unique id
-	const id = crypto.createHash('sha1').update(filePath).digest('hex')
+	const id = crypto.createHash('md5').update(filePath).digest('hex')
 
 	// File name and extension
 	const { name: fileName, ext: fileExt } = path.parse(filePath)
