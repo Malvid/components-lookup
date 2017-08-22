@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Use MD5 to generate the id of components
 
+### Fixed
+
+- Assert parameter order in tests
+
 ## [4.0.2] - 2017-08-08
 
 ### Changed
