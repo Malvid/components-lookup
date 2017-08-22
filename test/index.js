@@ -21,7 +21,7 @@ describe('index()', function() {
 
 		}, (err) => {
 
-			assert.strictEqual(`'pattern' must be a string`, err.message)
+			assert.strictEqual(err.message, `'pattern' must be a string`)
 
 		})
 
@@ -35,7 +35,7 @@ describe('index()', function() {
 
 		}, (err) => {
 
-			assert.strictEqual(`'resolvers' must be an array`, err.message)
+			assert.strictEqual(err.message, `'resolvers' must be an array`)
 
 		})
 
@@ -49,7 +49,7 @@ describe('index()', function() {
 
 		}, (err) => {
 
-			assert.strictEqual(`'opts' must be an object, null or undefined`, err.message)
+			assert.strictEqual(err.message, `'opts' must be an object, null or undefined`)
 
 		})
 
@@ -105,16 +105,16 @@ describe('index()', function() {
 			cwd: structure[0].name
 		})
 
-		assert.equal(0, result[0].index)
-		assert.equal(0, getData(result[0], 'view').index)
+		assert.strictEqual(result[0].index, 0)
+		assert.strictEqual(getData(result[0], 'view').index, 0)
 
-		assert.equal(componentName, result[0].name)
+		assert.strictEqual(result[0].name, componentName)
 
-		assert.equal(Object.keys(resolvers).length, result[0].data.length)
+		assert.strictEqual(result[0].data.length, Object.keys(resolvers).length)
 
-		assert.equal(structure[0].contents[0].contents, getData(result[0], 'view').data)
-		assert.equal(structure[0].contents[1].contents, getData(result[0], 'data').data)
-		assert.equal(null, getData(result[0], 'notes').data)
+		assert.strictEqual(getData(result[0], 'view').data, structure[0].contents[0].contents)
+		assert.strictEqual(getData(result[0], 'data').data, structure[0].contents[1].contents)
+		assert.strictEqual(getData(result[0], 'notes').data, null)
 
 	})
 
@@ -153,7 +153,7 @@ describe('index()', function() {
 			cwd: structure[0].name
 		})
 
-		assert.deepEqual(componentConfig, getData(result[0], 'config').data)
+		assert.deepEqual(getData(result[0], 'config').data, componentConfig)
 
 	})
 
@@ -228,7 +228,7 @@ describe('index()', function() {
 			cwd: structure[0].name
 		})
 
-		assert.equal(customData, getData(result[0], 'view').customData)
+		assert.equal(getData(result[0], 'view').customData, customData)
 
 	})
 
