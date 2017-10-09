@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-### Changed
-
-- Use MD5 to generate the id of components
-
 ### Fixed
 
 - Assert parameter order in tests
