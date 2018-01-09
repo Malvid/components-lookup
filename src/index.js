@@ -1,5 +1,6 @@
 'use strict'
 
+const util = require('util')
 const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
@@ -7,7 +8,6 @@ const glob = require('glob')
 const locatePath = require('locate-path')
 const rename = require('rename-extension')
 const isPlainObj = require('is-plain-obj')
-const pify = require('pify')
 const pMap = require('p-map')
 
 /**
@@ -35,7 +35,7 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 	const absolutePath = path.resolve(cwd, relativePath)
 
 	// Load the file
-	const contents = await pify(fs.readFile)(absolutePath, 'utf8')
+	const contents = await util.promisify(fs.readFile)(absolutePath, 'utf8')
 
 	// Parse file contents with the given parser
 	if (parse!=null) {
@@ -113,7 +113,7 @@ module.exports = async function(pattern, resolvers, opts) {
 	opts.cwd = path.resolve(opts.cwd)
 
 	// Get all files matching the pattern
-	const filePaths = await pify(glob)(pattern, { cwd: opts.cwd })
+	const filePaths = await util.promisify(glob)(pattern, { cwd: opts.cwd })
 
 	// Parse all matching components
 	return pMap(filePaths, (filePath, index) => parseComponent(filePath, index, resolvers, opts.cwd))
