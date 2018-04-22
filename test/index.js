@@ -9,13 +9,13 @@ const fsify = require('fsify')({
 	cwd: os.tmpdir()
 })
 
-const getData = (component, id) => component.data.filter((data) => data.id===id)[0]
+const getData = (component, id) => component.data.filter((data) => data.id === id)[0]
 
 describe('index()', function() {
 
 	it('should throw an error when called without pattern', async function() {
 
-		return index().then((result) => {
+		return index().then(() => {
 
 			throw new Error('Returned without error')
 
@@ -29,7 +29,7 @@ describe('index()', function() {
 
 	it('should throw an error when called without files', async function() {
 
-		return index('').then((result) => {
+		return index('').then(() => {
 
 			throw new Error('Returned without error')
 
@@ -43,7 +43,7 @@ describe('index()', function() {
 
 	it('should throw an error when called with invalid options', async function() {
 
-		return index('', [], '').then((result) => {
+		return index('', [], '').then(() => {
 
 			throw new Error('Returned without error')
 
@@ -93,11 +93,11 @@ describe('index()', function() {
 			},
 			{
 				id: 'data',
-				resolve: (fileName, fileExt) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ]
+				resolve: (fileName) => [ `${ fileName }.data.json`, `${ fileName }.data.js` ]
 			},
 			{
 				id: 'notes',
-				resolve: (fileName, fileExt) => [ `${ fileName }.md` ]
+				resolve: (fileName) => [ `${ fileName }.md` ]
 			}
 		]
 
@@ -145,7 +145,7 @@ describe('index()', function() {
 			{
 				id: 'config',
 				parse: (contents) => JSON.parse(contents),
-				resolve: (fileName, fileExt) => [ `${ fileName }.config.json` ]
+				resolve: (fileName) => [ `${ fileName }.config.json` ]
 			}
 		]
 
@@ -183,11 +183,11 @@ describe('index()', function() {
 			{
 				id: 'config',
 				parse: (contents) => JSON.parse(contents),
-				resolve: (fileName, fileExt) => [ `${ fileName }.config.json` ]
+				resolve: (fileName) => [ `${ fileName }.config.json` ]
 			}
 		]
 
-		return index('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: structure[0].name }).then((result) => {
+		return index('**/[^_]*.{ejs,njk,html}', resolvers, { cwd: structure[0].name }).then(() => {
 
 			throw new Error('Returned without error')
 
