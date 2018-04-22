@@ -29,7 +29,7 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 	const relativePath = await locatePath(locations, { cwd })
 
 	// Only continue with files
-	if (relativePath==null) return null
+	if (relativePath == null) return null
 
 	// Path to data must be absolute to read it
 	const absolutePath = path.resolve(cwd, relativePath)
@@ -38,9 +38,8 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 	const contents = await util.promisify(fs.readFile)(absolutePath, 'utf8')
 
 	// Parse file contents with the given parser
-	if (parse!=null) {
-		try { return parse(contents) }
-		catch (err) { throw new Error(`Failed to parse '${ relativePath }'`) }
+	if (parse != null) {
+		try { return parse(contents) } catch (err) { throw new Error(`Failed to parse '${ relativePath }'`) }
 	}
 
 	return contents
@@ -101,9 +100,9 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
  */
 module.exports = async function(pattern, resolvers, opts) {
 
-	if (typeof pattern!=='string') throw new Error(`'pattern' must be a string`)
-	if (Array.isArray(resolvers)===false) throw new Error(`'resolvers' must be an array`)
-	if (isPlainObj(opts)===false && opts!=null) throw new Error(`'opts' must be an object, null or undefined`)
+	if (typeof pattern !== 'string') throw new Error(`'pattern' must be a string`)
+	if (Array.isArray(resolvers) === false) throw new Error(`'resolvers' must be an array`)
+	if (isPlainObj(opts) === false && opts != null) throw new Error(`'opts' must be an object, null or undefined`)
 
 	opts = Object.assign({
 		cwd: process.cwd()
