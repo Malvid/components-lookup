@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### New
+
+- Custom URL parse function in the options
+
 ### Changed
 
 - Removed `prepublish` script from `package.json`

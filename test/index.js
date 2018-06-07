@@ -232,4 +232,30 @@ describe('index()', function() {
 
 	})
 
+	it('should return an array with a custom parsed component URL', async function() {
+
+		const customURL = uuid()
+
+		const structure = await fsify([
+			{
+				type: fsify.DIRECTORY,
+				name: uuid(),
+				contents: [
+					{
+						type: fsify.FILE,
+						name: `${ uuid() }.njk`
+					}
+				]
+			}
+		])
+
+		const result = await index('**/[^_]*.{ejs,njk,html}', [], {
+			cwd: structure[0].name,
+			url: () => customURL
+		})
+
+		assert.equal(result[0].url, customURL)
+
+	})
+
 })

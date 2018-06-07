@@ -52,10 +52,10 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
  * @param {String} filePath - Relative path to component.
  * @param {Integer} index - Index of the current element being processed.
  * @param {Array} resolvers - Array of objects with functions that return an array of paths to tell the potential location of files.
- * @param {String} cwd
+ * @param {Object} opts - Options.
  * @returns {Promise<Object>} Information of a component.
  */
-const parseComponent = async function(filePath, index, resolvers, cwd) {
+const parseComponent = async function(filePath, index, resolvers, opts) {
 
 	// Use the filePath to generate a unique id
 	const id = crypto.createHash('sha1').update(filePath).digest('hex')
@@ -64,10 +64,11 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
 	const { name: fileName, ext: fileExt } = path.parse(filePath)
 
 	// Absolute directory path to the component
-	const fileCwd = path.resolve(cwd, path.dirname(filePath))
+	const fileCwd = path.resolve(opts.cwd, path.dirname(filePath))
 
 	// Absolute preview URL
-	const url = '/' + rename(filePath, '.html')
+	const rawURL = '/' + rename(filePath, '.html')
+	const processedURL = opts.url(rawURL)
 
 	// Reuse data from resolver and add additional information
 	const data = await pMap(resolvers, async (resolver, index) => {
@@ -84,7 +85,7 @@ const parseComponent = async function(filePath, index, resolvers, cwd) {
 		id,
 		name: fileName,
 		src: filePath,
-		url,
+		url: processedURL,
 		data
 	}
 
@@ -105,7 +106,8 @@ module.exports = async function(pattern, resolvers, opts) {
 	if (isPlainObj(opts) === false && opts != null) throw new Error(`'opts' must be an object, null or undefined`)
 
 	opts = Object.assign({
-		cwd: process.cwd()
+		cwd: process.cwd(),
+		url: (url) => url
 	}, opts)
 
 	// Support relative and absolute paths
@@ -115,6 +117,6 @@ module.exports = async function(pattern, resolvers, opts) {
 	const filePaths = await util.promisify(glob)(pattern, { cwd: opts.cwd })
 
 	// Parse all matching components
-	return pMap(filePaths, (filePath, index) => parseComponent(filePath, index, resolvers, opts.cwd))
+	return pMap(filePaths, (filePath, index) => parseComponent(filePath, index, resolvers, opts))
 
 }

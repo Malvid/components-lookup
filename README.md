@@ -75,6 +75,7 @@ componentsLookup('**/*.njk', resolvers).then(console.log)
 - `resolvers` `{Array}` - Array of objects with functions that return an array of paths to tell the potential location of files.
 - `opts` `{?Object}` - Options.
 	- `cwd` `{?String}` - Directory in which to look for components. Defaults to `process.cwd()`.
+	- `url` `{?Function}` - Function that accepts and returns a URL. Allows you to modify the URL of components. Defaults to `(url) => url`.
 
 ## Returns
 
