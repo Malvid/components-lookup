@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [5.0.0] - 2018-08-25
 
-### New
+### Added
 
 - Custom URL parse function in the options
 
