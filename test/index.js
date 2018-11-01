@@ -118,7 +118,7 @@ describe('index()', function() {
 
 	})
 
-	it('should return an array with a component that has a parsed config', async function() {
+	it('should return an array with a component that has parsed data', async function() {
 
 		const componentName = uuid()
 		const componentConfig = { data: uuid() }
@@ -143,8 +143,15 @@ describe('index()', function() {
 
 		const resolvers = [
 			{
+				id: 'view',
+				// Use filePath as data
+				parse: async (contents, filePath) => filePath,
+				resolve: (fileName) => [ `${ fileName }.njk` ]
+			},
+			{
 				id: 'config',
-				parse: (contents) => JSON.parse(contents),
+				// Parse contents as object and use it as data
+				parse: async (contents) => JSON.parse(await contents),
 				resolve: (fileName) => [ `${ fileName }.config.json` ]
 			}
 		]
@@ -153,6 +160,7 @@ describe('index()', function() {
 			cwd: structure[0].name
 		})
 
+		assert.deepEqual(getData(result[0], 'view').data, structure[0].contents[0].name)
 		assert.deepEqual(getData(result[0], 'config').data, componentConfig)
 
 	})

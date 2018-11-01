@@ -35,11 +35,11 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
 	const absolutePath = path.resolve(cwd, relativePath)
 
 	// Load the file
-	const contents = await util.promisify(fs.readFile)(absolutePath, 'utf8')
+	const contents = util.promisify(fs.readFile)(absolutePath, 'utf8')
 
 	// Parse file contents with the given parser
 	if (parse != null) {
-		try { return parse(contents) } catch (err) { throw new Error(`Failed to parse '${ relativePath }'`) }
+		try { return parse(contents, absolutePath) } catch (err) { throw new Error(`Failed to parse '${ relativePath }'`) }
 	}
 
 	return contents

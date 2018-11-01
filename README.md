@@ -41,7 +41,7 @@ const resolvers = [
 	},
 	{
 		id: 'config',
-		parse: (contents) => JSON.parse(contents),
+		parse: async (contents, filePath) => JSON.parse(await contents),
 		resolve: (fileName, fileExt) => [ `${ fileName }.config.json` ]
 	}
 ]
@@ -72,7 +72,11 @@ componentsLookup('**/*.njk', resolvers).then(console.log)
 ## Parameters
 
 - `pattern` `{String}` - Files to look for using a glob pattern.
-- `resolvers` `{Array}` - Array of objects with functions that return an array of paths to tell the potential location of files.
+- `resolvers` `{Array}`
+	- `resolver` `{Object}` - Object that helps `components-lookup` to find files related to a component.
+		- `id` `{String}` - Unique identifier for the file.
+		- `parse` `{?Promise<String|Object>}` - Optional function that returns a promise resolving the content of a matching file. Can be used to modify the original content.
+		- `resolve` `{Function}` - Function that returns an array of file names related to a component. Accepts the file name and extension of the current component.
 - `opts` `{?Object}` - Options.
 	- `cwd` `{?String}` - Directory in which to look for components. Defaults to `process.cwd()`.
 	- `url` `{?Function}` - Function that accepts and returns a URL. Allows you to modify the URL of components. Defaults to `(url) => url`.
