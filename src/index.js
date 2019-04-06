@@ -50,7 +50,7 @@ const getFile = async function(fileName, fileExt, resolve, parse, cwd) {
  * Gather information about a component.
  * @public
  * @param {String} filePath - Relative path to component.
- * @param {Integer} index - Index of the current element being processed.
+ * @param {Number} index - Index of the current element being processed.
  * @param {Array} resolvers - Array of objects with functions that return an array of paths to tell the potential location of files.
  * @param {Object} opts - Options.
  * @returns {Promise<Object>} Information of a component.
