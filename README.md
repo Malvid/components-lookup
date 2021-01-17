@@ -1,6 +1,6 @@
 # components-lookup
 
-![Build](https://github.com/Malvid/components-lookup/workflows/Build/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/electerious/components-lookup/badge.svg?branch=master)](https://coveralls.io/github/electerious/components-lookup?branch=master)
+![Build](https://github.com/Malvid/components-lookup/workflows/Build/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/Malvid/components-lookup/badge.svg?branch=master)](https://coveralls.io/github/Malvid/components-lookup?branch=master)
 
 Look for components and gather information about them.
 
